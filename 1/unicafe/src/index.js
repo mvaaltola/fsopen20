@@ -22,6 +22,14 @@ const Button = ({props}) => {
 
 const Statistics = ({props}) => {
   const {good, neutral, bad} = props
+  if (good === 0 && neutral === 0 && bad === 0){
+    return(
+      <div>
+        <h1>statistics</h1>
+        <p>No feedback given</p>
+      </div>
+    )
+  }
   const count = good + bad + neutral
   const avg = (good - bad) / (count)
   const pos = good / count * 100
