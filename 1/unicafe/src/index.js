@@ -22,12 +22,18 @@ const Button = ({props}) => {
 
 const Statistics = ({props}) => {
   const {good, neutral, bad} = props
+  const count = good + bad + neutral
+  const avg = (good - bad) / (count)
+  const pos = good / count * 100
   return(
     <div>
       <h1>statistics</h1>
       <p>good: {good}</p>
       <p>neutral: {neutral}</p>
       <p>bad: {bad}</p>
+      <p>count: {count}</p>
+      <p>average: {avg}</p>
+      <p>positive: {pos}%</p>
     </div>
   )
 }
