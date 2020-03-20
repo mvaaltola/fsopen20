@@ -8,6 +8,16 @@ const App = () => {
 
   const addName = (event) => {
     event.preventDefault()
+    let found = false
+    if (persons.filter(person => person.name === newName).length !== 0) {
+      found = true
+    }
+    // persons.map(person => {if (newName === person.name){found = true}})
+    if (found) {
+      alert(`${newName} is already added to phonebook`)
+      setNewName('')
+      return
+    }
     const newPerson = {
       name: newName
     }
