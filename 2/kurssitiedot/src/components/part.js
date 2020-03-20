@@ -1,9 +1,9 @@
 import React from 'react'
 
 const Part = ({part}) => (
-  <p>
+  <li>
     {part.name} {part.exercises}
-  </p>
+  </li>
 )
 
 export default Part
