@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 const App = () => {
   const [ persons, setPersons] = useState([
@@ -35,14 +35,14 @@ const App = () => {
 
   const handleNameChange = (event) => setNewName(event.target.value)
   const handleNrChange = (event) => setNewNr(event.target.value)
-  const handleSearchNameChange = (event) => {
-    setSearchName(event.target.value)
-    let fp = persons.filter(n => n.name.includes(searchName))
-    console.log(fp)
+  const handleSearchNameChange = (event) => setSearchName(event.target.value)
 
+  const filter = () => {
+    let fp = persons.filter(n => n.name.toLowerCase().includes(searchName.toLowerCase()))
     setFilteredPersons(fp)
-    //setFilteredPersons(persons.filter(person => person.name === searchName))
   }
+
+  useEffect(filter, [searchName, persons])
 
   return (
     <div>
