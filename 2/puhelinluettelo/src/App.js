@@ -32,9 +32,15 @@ const App = () => {
       name: newName,
       number: newNr
     }
-    setPersons(persons.concat(newPerson))
-    setNewName('')
-    setNewNr('')
+    axios.post('http://localhost:3001/persons', newPerson)
+      .then(response => {
+        setPersons(persons.concat(newPerson))
+        setNewName('')
+        setNewNr('')
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   const handleNameChange = (event) => setNewName(event.target.value)
