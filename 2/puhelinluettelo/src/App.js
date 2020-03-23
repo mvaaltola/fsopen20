@@ -3,6 +3,7 @@ import Filter from './components/filter'
 import Newperson from './components/newperson'
 import Numbers from './components/numbers'
 import personsapi from './services/persons'
+import Notify from './components/notify'
 
 const App = () => {
   const [ persons, setPersons] = useState([])
@@ -10,6 +11,7 @@ const App = () => {
   const [ newNr, setNewNr ] = useState('')
   const [ searchName, setSearchName ] = useState('')
   const [ filteredPersons, setFilteredPersons ] = useState(persons)
+  const [ msg, setMsg ] = useState(null)
 
   useEffect(() => {
     personsapi.getAll().then(persondata => {setPersons(persondata)})
@@ -30,6 +32,7 @@ const App = () => {
           .then(response => {
             setPersons(persons.map(
               person => person.id !== response.id ? person : response))
+            setMsg(`Person updated`)
           })
         }
       setNewName('')
@@ -42,6 +45,7 @@ const App = () => {
     }
     personsapi.create(newPerson).then(response => {
       setPersons(persons.concat(response))
+      setMsg(`Person added`)
       setNewName('')
       setNewNr('')
     }).catch(error => {
@@ -66,6 +70,7 @@ const App = () => {
       if (window.confirm(`Delete ${p[0].name}?`)) {
         personsapi.remove(key).then(response => {
           setPersons(persons.filter(person => person.id !== key))
+          setMsg(`Person deleted`)
         }).catch(response => console.log(response))
       }
     }
@@ -83,6 +88,9 @@ const App = () => {
         handleNameChange={handleNameChange}
         newNr={newNr}
         handleNrChange={handleNrChange} />
+      <Notify
+        msg={msg}
+        setMsg={setMsg} />
       <Numbers
         persons={persons}
         filteredPersons={filteredPersons}
