@@ -11,7 +11,6 @@ function App() {
 
   useEffect(() => {
     let c = countries.filter(country => country.name.toLowerCase().includes(filtertext.toLowerCase()))
-    console.log(c)
     setFilteredCountries(c)
   }, [countries, filtertext])
 
@@ -25,7 +24,8 @@ function App() {
         value={filtertext}
         onChange={handleFiltertextChange} />
       <Countrylist
-        countries={filteredCountries} />
+        countries={filteredCountries}
+        setFiltertext={setFiltertext} />
     </div>
   );
 }

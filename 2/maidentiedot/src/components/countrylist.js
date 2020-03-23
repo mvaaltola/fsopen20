@@ -1,6 +1,12 @@
 import React from 'react';
 
-const Countrylist = ({countries}) => {
+const Countrylist = ({countries, setFiltertext}) => {
+
+  const showCountry = (country) => {
+    return(() => {
+      setFiltertext(country.name)
+    })
+  }
 
   if (countries.length > 10) {
     return (
@@ -9,9 +15,14 @@ const Countrylist = ({countries}) => {
   } else if (countries.length > 1) {
     return (
       <ul>
-        {countries.map((country,i) =>
-            <li key={country.name}>{country.name}</li>
-        )}
+        {countries.map((country,i) => {
+          return(
+            <li key={country.name}>
+              {country.name}
+              <button onClick={showCountry(country)}>show</button>
+            </li>
+          )
+        })}
       </ul>
     )
   } else {
