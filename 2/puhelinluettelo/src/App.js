@@ -22,7 +22,16 @@ const App = () => {
       found = true
     }
     if (found) {
-      alert(`${newName} is already added to phonebook`)
+      const p = persons.filter(person => person.name === newName)
+      if (window.confirm(`${p[0].name} is already added to phonebook.
+        Replace the old number with a new one?`)) {
+          const newPerson = {...p[0], number: newNr}
+          personsapi.update(newPerson)
+          .then(response => {
+            setPersons(persons.map(
+              person => person.id !== response.id ? person : response))
+          })
+        }
       setNewName('')
       setNewNr('')
       return
