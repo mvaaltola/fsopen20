@@ -51,6 +51,17 @@ const App = () => {
 
   useEffect(filter, [searchName, persons])
 
+  const delButton = (key) => {
+    return () => {
+      const p = persons.filter(person => person.id === key)
+      if (window.confirm(`Delete ${p[0].name}?`)) {
+        personsapi.remove(key).then(response => {
+          setPersons(persons.filter(person => person.id !== key))
+        }).catch(response => console.log(response))
+      }
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -65,7 +76,8 @@ const App = () => {
         handleNrChange={handleNrChange} />
       <Numbers
         persons={persons}
-        filteredPersons={filteredPersons} />
+        filteredPersons={filteredPersons}
+        delButton={delButton} />
     </div>
   )
 }
