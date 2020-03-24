@@ -50,6 +50,21 @@ app.post('/api/persons', (req, res) => {
     ? Math.round(Math.random() * 1000)
     : 0
   const person = req.body
+  let validPerson = true
+  let errorMsg = ''
+  if (!person.name) {
+    errorMsg = 'no name included'
+    validPerson = false
+  } else if (!person.number) {
+    errorMsg = 'no number included'
+    validPerson = false
+  } else if (persons.find(p => p.name === person.name)) {
+    errorMsg = 'name must be unique'
+    validPerson = false
+  }
+  if (!validPerson) {
+    return res.status(400).json({error: errorMsg})
+  }
   person.id = maxId + 1
   persons = persons.concat(person)
   res.json(person)
