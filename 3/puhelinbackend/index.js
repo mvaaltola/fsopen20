@@ -1,8 +1,9 @@
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
+const token = morgan.token('postprinter', (req, res) => { return JSON.stringify(req.body) })
 app.use(express.json())
-app.use(morgan('tiny'))
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :postprinter'))
 
 let persons = [
     {
