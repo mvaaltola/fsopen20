@@ -12,6 +12,7 @@ const App = () => {
   const [ searchName, setSearchName ] = useState('')
   const [ filteredPersons, setFilteredPersons ] = useState(persons)
   const [ msg, setMsg ] = useState(null)
+  const [ success, setSuccess ] = useState(true)
 
   useEffect(() => {
     personsapi.getAll().then(persondata => {setPersons(persondata)})
@@ -33,6 +34,7 @@ const App = () => {
             setPersons(persons.map(
               person => person.id !== response.id ? person : response))
             setMsg(`Person updated`)
+            setSuccess(true)
           })
         }
       setNewName('')
@@ -43,13 +45,18 @@ const App = () => {
       name: newName,
       number: newNr
     }
-    personsapi.create(newPerson).then(response => {
-      setPersons(persons.concat(response))
-      setMsg(`Person added`)
-      setNewName('')
-      setNewNr('')
-    }).catch(error => {
-      console.log(error)
+    personsapi.create(newPerson)
+      .then(response => {
+        setPersons(persons.concat(response))
+        setMsg(`Person added`)
+        setSuccess(true)
+        setNewName('')
+        setNewNr('')
+    })
+      .catch(error => {
+        console.log(error.response.data.error)
+        setMsg(error.response.data.error)
+        setSuccess(false)
     })
   }
 
@@ -71,6 +78,7 @@ const App = () => {
         personsapi.remove(key).then(response => {
           setPersons(persons.filter(person => person.id !== key))
           setMsg(`Person deleted`)
+          setSuccess(true)
         }).catch(response => console.log(response))
       }
     }
@@ -90,7 +98,8 @@ const App = () => {
         handleNrChange={handleNrChange} />
       <Notify
         msg={msg}
-        setMsg={setMsg} />
+        setMsg={setMsg}
+        success={success} />
       <Numbers
         persons={persons}
         filteredPersons={filteredPersons}

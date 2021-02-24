@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-const Notify = ({msg, setMsg}) => {
+const Notify = ({msg, setMsg, success}) => {
 
   useEffect(() => {
     setTimeout(() => {
@@ -8,10 +8,12 @@ const Notify = ({msg, setMsg}) => {
     }, 5000)
   }, [msg, setMsg])
 
+  let color = 'green';
+  if (!success) { color = 'red' }
   const msgStyle = {
-    color: 'green',
+    color: color,
     background: 'lightgray',
-    border: '2px solid green'
+    border: `2px solid ${color}`
   }
 
   if (msg === null) {

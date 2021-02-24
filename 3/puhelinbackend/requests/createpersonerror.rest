@@ -11,3 +11,19 @@ Content-Type: application/json
 {
     "number": "040-123-4567"
 }
+###
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name" : "ed",
+  "number": "04"
+}
+###
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "duplicated name",
+  "number": "123456789"
+}
