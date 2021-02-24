@@ -1,0 +1,7 @@
+PUT http://localhost:3001/api/persons/5e7b0d6c5c3c9274854d88ee
+Content-Type: application/json
+
+{
+  "name": "miglu",
+  "number": "1234-5678-21"
+}
