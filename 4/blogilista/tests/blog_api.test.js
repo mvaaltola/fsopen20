@@ -18,19 +18,19 @@ describe('blog api', ()  => {
   })
 
   test('blogs are returned as json', async () => {
-    await api.get('/api/blogs')
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
+    const response = await api.get('/api/blogs')
+    expect(response.statusCode).toBe(200)
+    expect(response.type).toBe('application/json')
   })
 
   test('all blogs are returned', async () => {
-    const blogs = await helper.blogsInDb()
-    expect(blogs).toHaveLength(helper.initialBlogs.length)
+    const response = await api.get('/api/blogs')
+    expect(response.body).toHaveLength(helper.initialBlogs.length)
   })
 
   test('first blog is by me', async () => {
-    const blogs = await helper.blogsInDb()
-    expect(blogs[0].author).toBe('Mikael')
+    const blogs = await api.get('/api/blogs')
+    expect(blogs.body[0].author).toBe('Mikael')
   })
 
   afterAll(() => {
