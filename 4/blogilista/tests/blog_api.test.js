@@ -56,6 +56,16 @@ describe('blog api', ()  => {
 
   })
 
+  test('undefined likes set to zero', async () => {
+    const newBlog = {
+      title: 'unliked blog',
+      author: 'mv',
+      url: 'full-stacks.org',
+    }
+    const response = await api.post('/api/blogs').send(newBlog)
+    expect(response.body.likes).toBe(0)
+  })
+
   afterAll(() => {
     mongoose.connection.close()
   })
