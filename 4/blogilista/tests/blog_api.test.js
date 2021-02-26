@@ -93,7 +93,7 @@ describe('post to blog api', () =>{
   })
 })
 
-describe('delete from blog api', function () {
+describe('deletes from blog api', function () {
 
   beforeAll(async () => {
     await Blog.deleteMany({})
@@ -118,6 +118,43 @@ describe('delete from blog api', function () {
 
     expect(response.statusCode).toBe(400)
     expect(response.body.error).toBe('malformatted id')
+  })
+
+})
+
+describe('update blogs', function () {
+
+  beforeEach(async () => {
+    await Blog.deleteMany({})
+    for (const blog of helper.initialBlogs) {
+      let blogObject = new Blog(blog)
+      await blogObject.save()
+    }
+  })
+
+  test('blog is updated after put', async function () {
+    const blogsBeforePut = await helper.blogsInDb()
+    const originalBlog = blogsBeforePut[0]
+    const updatedBlog = originalBlog
+    updatedBlog.title = 'new and improved blog title from test'
+    updatedBlog.author = 'new author as well'
+    updatedBlog.likes = 1337
+
+    const response = await api.put(`/api/blogs/${originalBlog.id}`).send(updatedBlog)
+    expect(response.type).toBe('application/json')
+    expect(response.statusCode).toBe(200)
+    expect(response.body.title).toBe(updatedBlog.title)
+    expect(response.body.author).toBe(updatedBlog.author)
+    expect(response.body.url).toBe(originalBlog.url)
+    expect(response.body.likes).toBe(originalBlog.likes)
+
+    const blogsAfterPut = await helper.blogsInDb()
+    expect(blogsAfterPut.length).toBe(blogsBeforePut.length)
+    expect(blogsAfterPut[0].id).toBe(blogsBeforePut[0].id)
+    expect(blogsAfterPut[0].title).toBe(updatedBlog.title)
+    expect(blogsAfterPut[0].author).toBe(updatedBlog.author)
+    expect(blogsAfterPut[0].likes).toBe(updatedBlog.likes)
+    expect(blogsAfterPut[0].url).toBe(originalBlog.url)
   })
 
 })
