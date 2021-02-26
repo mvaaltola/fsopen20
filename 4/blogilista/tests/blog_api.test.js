@@ -6,11 +6,10 @@ const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
 
-describe('blog api', ()  => {
+describe('get from blog api', ()  => {
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     await Blog.deleteMany({})
-
     for (const blog of helper.initialBlogs) {
       let blogObject = new Blog(blog)
       await blogObject.save()
@@ -36,6 +35,17 @@ describe('blog api', ()  => {
   test('identifier is called id', async () => {
     const blogs = await api.get('/api/blogs')
     expect(blogs.body[0].id).toBeDefined()
+  })
+})
+
+describe('post to blog api', () =>{
+
+  beforeEach(async () => {
+    await Blog.deleteMany({})
+    for (const blog of helper.initialBlogs) {
+      let blogObject = new Blog(blog)
+      await blogObject.save()
+    }
   })
 
   test('new blog is added', async () => {
@@ -81,10 +91,37 @@ describe('blog api', ()  => {
     expect(response.statusCode).toBe(400)
     expect(response.body.error).toBeDefined()
   })
+})
 
+describe('delete from blog api', function () {
 
-  afterAll(() => {
-    mongoose.connection.close()
+  beforeAll(async () => {
+    await Blog.deleteMany({})
+    for (const blog of helper.initialBlogs) {
+      let blogObject = new Blog(blog)
+      await blogObject.save()
+    }
   })
 
+  test('less blogs after delete', async () => {
+    const blogsBeforeDelete = await helper.blogsInDb()
+    const deleted_id = blogsBeforeDelete[0].id
+
+    const response = await api.delete(`/api/blogs/${deleted_id}`)
+
+    const blogsAfterDelete = await helper.blogsInDb()
+    expect(blogsAfterDelete.length).toBe(blogsBeforeDelete.length - 1)
+  })
+
+  test('invalid id results in error', async () => {
+    let response = await api.delete('/api/blogs/1234')
+
+    expect(response.statusCode).toBe(400)
+    expect(response.body.error).toBe('malformatted id')
+  })
+
+})
+
+afterAll(() => {
+  mongoose.connection.close()
 })
