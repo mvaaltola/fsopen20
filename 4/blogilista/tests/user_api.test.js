@@ -68,6 +68,24 @@ describe('when there is initially one user at db', () => {
     expect(usernames).toContain(newUser.username)
   })
 
+  test('creation succeeds with duplicate username', async () => {
+    const newUser = {
+      username: 'duplicateusername',
+      name: 'Mikael Vaaltola',
+      password: 'top-secret',
+    }
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+  })
+
   test('creation fails without username or short password', async () => {
     const newUserNoUsername = {
       name: 'Mikael Vaaltola',

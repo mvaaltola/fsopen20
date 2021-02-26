@@ -9,16 +9,11 @@ blogsRouter.get('/', async (request, response) => {
 })
 
 blogsRouter.post('/', async (request, response) => {
-  if (!(request.body.title && request.body.url)) {
-    return response.status(400).json({ error: 'missing title/url' })
-  }
-  if (request.body.userId === undefined) {
-    return response.status(400).json({ error: 'missing userId' })
-  }
-  if (request.body.likes === undefined) {request.body.likes = 0}
-
   const blog = new Blog(request.body)
   const user = await User.findById(request.body.userId)
+  if (!user) {
+    return response.status(400).json({ error: 'invalid/missing userId' })
+  }
   blog.user = user._id
 
   const result = await blog.save()

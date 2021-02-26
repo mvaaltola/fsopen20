@@ -181,6 +181,17 @@ describe('update blogs', function () {
     expect(blogsAfterPut[0].url).toBe(originalBlog.url)
   })
 
+  test('likes set to 0 if undefined in put', async function () {
+    const blogsBeforePut = await helper.blogsInDb()
+    const blog = blogsBeforePut[0]
+    delete blog.likes
+
+    const response = await api.put(`/api/blogs/${blog.id}`).send(blog)
+    expect(response.statusCode).toBe(200)
+    expect(response.body.likes).toBe(0)
+
+  })
+
 })
 
 afterAll(() => {
