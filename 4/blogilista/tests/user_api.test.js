@@ -67,6 +67,29 @@ describe('when there is initially one user at db', () => {
     const usernames = usersAtEnd.map(u => u.username)
     expect(usernames).toContain(newUser.username)
   })
+
+  test('creation fails without username or short password', async () => {
+    const newUserNoUsername = {
+      name: 'Mikael Vaaltola',
+      password: 'top-secret',
+    }
+    const newUserShortPassword = {
+      username: 'm_vaaltola',
+      name: 'Mikael Vaaltola',
+      password: '12',
+    }
+    await api
+      .post('/api/users')
+      .send(newUserNoUsername)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    await api
+      .post('/api/users')
+      .send(newUserShortPassword)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+  })
 })
 
 afterAll(() => {
