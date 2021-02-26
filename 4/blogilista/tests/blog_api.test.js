@@ -33,6 +33,11 @@ describe('blog api', ()  => {
     expect(blogs.body[0].author).toBe('Mikael')
   })
 
+  test('identifier is called id', async () => {
+    const blogs = await api.get('/api/blogs')
+    expect(blogs.body[0].id).toBeDefined()
+  })
+
   afterAll(() => {
     mongoose.connection.close()
   })
