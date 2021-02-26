@@ -26,14 +26,14 @@ const initialBlogs = async () => {
       author: 'miglu',
       url: 'mvaaltola.org',
       likes: 101,
-      userId: userId
+      user: userId
     },
     {
       title: 'vim is my IDE',
       author: 'linus',
       url: 'foss.fi',
       likes: 9999,
-      userId: userId
+      user: userId
     }
   ]
 }

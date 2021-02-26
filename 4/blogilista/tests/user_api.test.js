@@ -44,8 +44,6 @@ describe('when there is initially one user at db', () => {
     const response = await api.get(`/api/users/${userId}`)
     expect(response.statusCode).toBe(200)
     expect(response.body.blogs.length).toBe(1)
-    console.log(response.body)
-
   })
 
   test('creation succeeds with a fresh username', async () => {
