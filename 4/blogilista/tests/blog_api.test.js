@@ -66,6 +66,23 @@ describe('blog api', ()  => {
     expect(response.body.likes).toBe(0)
   })
 
+  test('new blog with missing title/url returns 400', async () => {
+    const noUrlBlog = {
+      title: 'no url',
+    }
+    const noTitleBlog = {
+      url: 'no-title.fi'
+    }
+    let response = await api.post('/api/blogs').send(noUrlBlog)
+    expect(response.statusCode).toBe(400)
+    expect(response.body.error).toBeDefined()
+
+    response = await api.post('/api/blogs').send(noTitleBlog)
+    expect(response.statusCode).toBe(400)
+    expect(response.body.error).toBeDefined()
+  })
+
+
   afterAll(() => {
     mongoose.connection.close()
   })
