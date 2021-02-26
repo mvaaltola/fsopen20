@@ -29,6 +29,25 @@ describe('when there is initially one user at db', () => {
     expect(response.body[0].passwordHash).toBeUndefined()
   })
 
+  test('get request shows blogs by user', async function () {
+    const userId = await helper.getUserId()
+    const newBlog = {
+      title: 'new blog from user_api.test.js/get request shows blogs by user',
+      author: 'mv',
+      url: 'full-stacks.org',
+      likes: 11,
+      userId: userId
+    }
+    const blogCreationResponse = await api.post('/api/blogs').send(newBlog)
+    expect(blogCreationResponse.statusCode).toBe(201)
+
+    const response = await api.get(`/api/users/${userId}`)
+    expect(response.statusCode).toBe(200)
+    expect(response.body.blogs.length).toBe(1)
+    console.log(response.body)
+
+  })
+
   test('creation succeeds with a fresh username', async () => {
     const usersAtStart = await helper.usersInDb()
 
