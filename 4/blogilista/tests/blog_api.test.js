@@ -38,6 +38,24 @@ describe('blog api', ()  => {
     expect(blogs.body[0].id).toBeDefined()
   })
 
+  test('new blog is added', async () => {
+    const newBlog = {
+      title: 'new blog from test',
+      author: 'mv',
+      url: 'full-stacks.org',
+      likes: 11
+    }
+    const blogsBeforePost = await helper.blogsInDb()
+
+    const response = await api.post('/api/blogs').send(newBlog)
+    expect(response.statusCode).toBe(201)
+
+    const blogsAfterPost = await helper.blogsInDb()
+    expect(blogsAfterPost.length).toBe(blogsBeforePost.length + 1)
+    expect(blogsAfterPost[blogsAfterPost.length - 1].title).toBe(newBlog.title)
+
+  })
+
   afterAll(() => {
     mongoose.connection.close()
   })
