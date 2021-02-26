@@ -5,12 +5,16 @@ const app = require('../app')
 
 const api = supertest(app)
 const Blog = require('../models/blog')
+const testUsers = require('./user_api.test')
 
 describe('get from blog api', ()  => {
 
-  beforeAll(async () => {
+  beforeEach(async () => {
+    await testUsers.addTestUser()
+
     await Blog.deleteMany({})
-    for (const blog of helper.initialBlogs) {
+    const initialBlogs = await helper.initialBlogs()
+    for (const blog of initialBlogs) {
       let blogObject = new Blog(blog)
       await blogObject.save()
     }
@@ -24,7 +28,8 @@ describe('get from blog api', ()  => {
 
   test('all blogs are returned', async () => {
     const response = await api.get('/api/blogs')
-    expect(response.body).toHaveLength(helper.initialBlogs.length)
+    const initialBlogs = await helper.initialBlogs()
+    expect(response.body).toHaveLength(initialBlogs.length)
   })
 
   test('first blog is by me', async () => {
@@ -41,8 +46,11 @@ describe('get from blog api', ()  => {
 describe('post to blog api', () =>{
 
   beforeEach(async () => {
+    await testUsers.addTestUser()
+
     await Blog.deleteMany({})
-    for (const blog of helper.initialBlogs) {
+    const initialBlogs = await helper.initialBlogs()
+    for (const blog of initialBlogs) {
       let blogObject = new Blog(blog)
       await blogObject.save()
     }
@@ -53,7 +61,8 @@ describe('post to blog api', () =>{
       title: 'new blog from test',
       author: 'mv',
       url: 'full-stacks.org',
-      likes: 11
+      likes: 11,
+      userId: await helper.getUserId()
     }
     const blogsBeforePost = await helper.blogsInDb()
 
@@ -71,12 +80,13 @@ describe('post to blog api', () =>{
       title: 'unliked blog',
       author: 'mv',
       url: 'full-stacks.org',
+      userId: await helper.getUserId()
     }
     const response = await api.post('/api/blogs').send(newBlog)
     expect(response.body.likes).toBe(0)
   })
 
-  test('new blog with missing title/url returns 400', async () => {
+  test('new blog with missing title/url returns error', async () => {
     const noUrlBlog = {
       title: 'no url',
     }
@@ -91,13 +101,26 @@ describe('post to blog api', () =>{
     expect(response.statusCode).toBe(400)
     expect(response.body.error).toBeDefined()
   })
+
+  test('new blog with missing userId returns error', async () => {
+    const newBlog = {
+      title: 'new blog from test without creator',
+      author: 'mv',
+      url: 'full-stacks.org',
+      likes: 11,
+    }
+    let response = await api.post('/api/blogs').send(newBlog)
+    expect(response.statusCode).toBe(400)
+    expect(response.body.error).toBeDefined()
+  })
 })
 
 describe('deletes from blog api', function () {
 
   beforeAll(async () => {
     await Blog.deleteMany({})
-    for (const blog of helper.initialBlogs) {
+    const initialBlogs = await helper.initialBlogs()
+    for (const blog of initialBlogs) {
       let blogObject = new Blog(blog)
       await blogObject.save()
     }
@@ -126,7 +149,8 @@ describe('update blogs', function () {
 
   beforeEach(async () => {
     await Blog.deleteMany({})
-    for (const blog of helper.initialBlogs) {
+    const initialBlogs = await helper.initialBlogs()
+    for (const blog of initialBlogs) {
       let blogObject = new Blog(blog)
       await blogObject.save()
     }

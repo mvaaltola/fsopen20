@@ -1,25 +1,42 @@
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
-const initialBlogs = [
-  {
-    title: 'My very first test blog',
-    author: 'Mikael',
-    url: 'http://vaalto.la',
-    likes: 123,
-  },
-  {
-    title: 'another one',
-    author: 'miglu',
-    url: 'mvaaltola.org',
-    likes: 101
-  },
-  {
-    title: 'vim is my IDE',
-    author: 'linus',
-    url: 'foss.fi',
-    likes: 9999,
-  }
-]
+const usersInDb = async () => {
+  const users = await User.find({})
+  return users.map(u => u.toJSON())
+}
+
+const getUserId = async () => {
+  const users = await usersInDb()
+  return users[0].id
+}
+
+const initialBlogs = async () => {
+  const userId = await getUserId()
+  return [
+    {
+      title: 'My very first test blog',
+      author: 'Mikael',
+      url: 'http://vaalto.la',
+      likes: 123,
+      user: userId
+    },
+    {
+      title: 'another one',
+      author: 'miglu',
+      url: 'mvaaltola.org',
+      likes: 101,
+      userId: userId
+    },
+    {
+      title: 'vim is my IDE',
+      author: 'linus',
+      url: 'foss.fi',
+      likes: 9999,
+      userId: userId
+    }
+  ]
+}
 
 
 const blogsInDb = async() => {
@@ -28,5 +45,5 @@ const blogsInDb = async() => {
 }
 
 module.exports = {
-  initialBlogs, blogsInDb
+  initialBlogs, blogsInDb, usersInDb, getUserId
 }
