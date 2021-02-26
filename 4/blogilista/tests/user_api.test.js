@@ -68,7 +68,7 @@ describe('when there is initially one user at db', () => {
     expect(usernames).toContain(newUser.username)
   })
 
-  test('creation succeeds with duplicate username', async () => {
+  test('creation does not succeed with duplicate username', async () => {
     const newUser = {
       username: 'duplicateusername',
       name: 'Mikael Vaaltola',
